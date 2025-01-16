@@ -26,8 +26,7 @@ fn main() -> std::io::Result<()> {
         .map(|e| e.unwrap())
         .filter(|e| {
             e.path()
-                .extension()
-                .map_or(false, |ext| ext.to_str().unwrap() == "proto")
+                .extension().is_some_and(|ext| ext.to_str().unwrap() == "proto")
         })
     {
         let path = entry.path();
