@@ -3,6 +3,8 @@ use walkdir::WalkDir;
 fn main() -> std::io::Result<()> {
     let protobufs_dir = "src/protobufs/";
     println!("cargo:rerun-if-changed={}", protobufs_dir);
+    let out_dir = "src/generated-protobufs/";
+
 
     // Allows protobuf compilation without installing the `protoc` binary
     match protoc_bin_vendored::protoc_bin_path() {
@@ -57,6 +59,8 @@ fn main() -> std::io::Result<()> {
         config.type_attribute(".", "#[serde(rename_all = \"camelCase\")]");
         config.type_attribute(".", "#[allow(clippy::doc_lazy_continuation)]");
     }
+
+    config.out_dir(out_dir);
 
     config.compile_protos(&protos, &[protobufs_dir]).unwrap();
 
