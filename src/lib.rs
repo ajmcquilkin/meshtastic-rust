@@ -75,7 +75,7 @@ pub mod packet {
 pub mod protobufs {
 
     #![allow(non_snake_case)]
-    include!(concat!(env!("OUT_DIR"), "/meshtastic.rs"));
+    include!("generated-protobufs/meshtastic.rs");
 }
 
 /// This module re-exports the `specta` crate, which is used to generate TypeScript
