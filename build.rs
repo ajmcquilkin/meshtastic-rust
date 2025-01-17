@@ -1,6 +1,13 @@
-use walkdir::WalkDir;
-
 fn main() -> std::io::Result<()> {
+    #[cfg(feature = "gen")]
+    {
+        let _ = generate_protobufs();
+    }
+    Ok(())
+}
+
+#[cfg(feature = "gen")]
+fn generate_protobufs() -> std::io::Result<()> {
     let protobufs_dir = "src/protobufs/";
     println!("cargo:rerun-if-changed={}", protobufs_dir);
 
@@ -21,7 +28,7 @@ fn main() -> std::io::Result<()> {
 
     let mut protos = vec![];
 
-    for entry in WalkDir::new(protobufs_dir)
+    for entry in walkdir::WalkDir::new(protobufs_dir)
         .into_iter()
         .map(|e| e.unwrap())
         .filter(|e| {
@@ -58,6 +65,8 @@ fn main() -> std::io::Result<()> {
         config.type_attribute(".", "#[allow(clippy::doc_lazy_continuation)]");
     }
 
+    let gen_dir = "src/generated/";
+    config.out_dir(gen_dir);
     config.compile_protos(&protos, &[protobufs_dir]).unwrap();
 
     Ok(())
